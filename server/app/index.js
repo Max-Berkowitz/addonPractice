@@ -27,6 +27,4 @@ app.use(express.static(`${__dirname}/../../client/dist/`));
 
 app.use('/api', api);
 
-app.get('*', (req, res) => res.redirect(301, '/'));
-
 module.exports = app;
