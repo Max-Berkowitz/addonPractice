@@ -1,6 +1,8 @@
 #include <node.h>
+#include "explainReturnValue.h"
 
 using namespace v8;
+using namespace explainReturnValue;
 
 void add(const FunctionCallbackInfo<Value> &args)
 {
@@ -12,9 +14,11 @@ void add(const FunctionCallbackInfo<Value> &args)
 
     int sum = num1 + num2;
 
+    std::string returnString = addAString::explain(sum);
+
     //* C++ ends here
 
-    args.GetReturnValue().Set(Number::New(isolate, sum));
+    args.GetReturnValue().Set(String::NewFromUtf8(isolate, returnString.c_str()));
 }
 
 void init(Local<Object> exports, Local<Object> method)
