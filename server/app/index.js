@@ -27,4 +27,29 @@ app.use(express.static(`${__dirname}/../../client/dist/`));
 
 app.use('/api', api);
 
+// Ping setup
+
+let ping = false;
+
+const gracefulShutdown = async () => {
+  // await port.disconnect()
+  // await new Promise(resolve => db.connection.close(false, resolve))
+  process.exit();
+};
+
+const timedExit = async () => {
+  if (!ping) gracefulShutdown();
+  else {
+    ping = false;
+    setTimeout(timedExit, 2000);
+  }
+};
+
+setTimeout(timedExit, 10000); // starts on server start
+
+app.post('/ping', (req, res) => {
+  ping = true;
+  res.sendStatus(201);
+});
+
 module.exports = app;

@@ -7,8 +7,8 @@ using namespace explainReturnValue;
 void add(const FunctionCallbackInfo<Value> &args)
 {
     Isolate *isolate = args.GetIsolate();
-    int num1 = args[0].As<Number>()->Value();
-    int num2 = args[1].As<Number>()->Value();
+    int num1 = int(args[0].As<Number>()->Value());
+    int num2 = int(args[1].As<Number>()->Value());
 
     //* C++ starts here
 

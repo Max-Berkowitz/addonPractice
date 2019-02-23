@@ -4,9 +4,8 @@ module.exports = {
   context: resolve(__dirname, 'client'),
   entry: './index.jsx',
   output: {
-    path: resolve(__dirname, 'client/dist/'),
+    path: resolve(__dirname, 'client/dist/bundle'),
     filename: 'bundle.js',
-    publicPath: '/dist/',
   },
   resolve: { extensions: ['.js', '.jsx'] },
   module: {
@@ -15,10 +14,6 @@ module.exports = {
         test: /\.(js|jsx)$/,
         exclude: [/node_modules/],
         use: [{ loader: 'babel-loader' }],
-      },
-      {
-        test: /\.(png|jpg|gif)$/,
-        use: [{ loader: 'file-loader', options: {} }],
       },
     ],
   },
