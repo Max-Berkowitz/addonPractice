@@ -5,7 +5,8 @@
   "main": "server/index.js",
   "scripts": {
     "test": "set NODE_ENV=test&& jest",
-    "start": "set NODE_ENV=production&& set SECRET=somethingSecret&& node server/index.js",
+    "start": "set NODE_ENV=production&&set SECRET=somethingSecret&&node server/index.js",
+    "open": "start chrome /max --app=http://localhost:3000",
     "cpp-build": "node-gyp rebuild",
     "deployment-build": "webpack -p --progress --optimize-minimize --optimize-occurrence-order --optimize-dedupe --config webpack.config.js",
     "react-dev": "webpack -d --watch --optimize-minimize --optimize-occurrence-order --optimize-dedupe --config webpack.config.js"
