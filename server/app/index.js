@@ -2,6 +2,7 @@ const express = require('express');
 const session = require('express-session');
 const bodyParser = require('body-parser');
 const api = require('./api/index');
+const pyPort = require('./utils/pythonServer/pyPort');
 
 const config = process.env.NODE_ENV === 'production' ? process.env : require('../../config/config');
 
@@ -32,8 +33,7 @@ app.use('/api', api);
 let ping = false;
 
 const gracefulShutdown = async () => {
-  // await port.disconnect()
-  // await new Promise(resolve => db.connection.close(false, resolve))
+  await Promise.race([pyPort.disconnect(), new Promise(resolve => setTimeout(resolve, 2000))]);
   process.exit();
 };
 

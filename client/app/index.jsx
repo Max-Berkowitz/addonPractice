@@ -71,15 +71,32 @@ export default class extends Component {
   constructor(props) {
     super(props);
 
-    this.state = { num1: 0, num2: 0, operation: '+', response: 'Hello World, This is your sum: 0' };
+    this.state = { num1: 0, num2: 0, operation: '+', response: '', getHistory: false, history: [] };
 
     this.handleNumberInputChange = this.handleNumberInputChange.bind(this);
     this.handleAddOneClick = this.handleAddOneClick.bind(this);
     this.handleOperationChange = this.handleOperationChange.bind(this);
+    this.handleFullHistoryClick = this.handleFullHistoryClick.bind(this);
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     setInterval(ping, 1000);
+    await post('/api/connect');
+    this.setState({ response: 'Hello World' });
+  }
+
+  async componentDidUpdate() {
+    const { getHistory } = this.state;
+    if (getHistory) {
+      const {
+        data: { history },
+      } = await get('/api/history');
+      this.updateHistory(history);
+    }
+  }
+
+  updateHistory(history) {
+    this.setState({ getHistory: false, history });
   }
 
   async handleNumberInputChange(value, numType) {
@@ -93,7 +110,7 @@ export default class extends Component {
           num2: operation === '-' && numType === 'num1' ? -1 * otherNumber : otherNumber,
         },
       });
-      this.setState({ [numType]: value, response });
+      this.setState({ [numType]: value, response, getHistory: true });
     } else if (operation === 'X' || operation === '/') {
       const {
         data: { product: response },
@@ -103,7 +120,7 @@ export default class extends Component {
           num2: operation === '/' && numType === 'num1' ? 1 / otherNumber : otherNumber,
         },
       });
-      this.setState({ [numType]: value, response });
+      this.setState({ [numType]: value, response, getHistory: true });
     }
   }
 
@@ -112,7 +129,7 @@ export default class extends Component {
     const {
       data: { sum: response },
     } = await get('/api/addPLusOne', { params: { num1, num2 } });
-    this.setState({ response });
+    this.setState({ operation: '+', response, getHistory: true });
   }
 
   handleOperationChange({ target: { value: operation } }) {
@@ -122,13 +139,23 @@ export default class extends Component {
     });
   }
 
+  async handleFullHistoryClick() {
+    const {
+      data: { history },
+    } = await get('/api/full_history');
+    this.setState({ history });
+  }
+
   render() {
-    const { num1, num2, operation, response } = this.state;
+    const { num1, num2, operation, response, history } = this.state;
     return (
       <Fragment>
         <div>{response}</div>
         <button type="submit" onClick={this.handleAddOneClick}>
           Add one
+        </button>
+        <button type="submit" onClick={this.handleFullHistoryClick}>
+          Full History
         </button>
         <Container>
           <NumberInput
@@ -156,8 +183,11 @@ export default class extends Component {
             onChange={({ target: { value } }) => this.handleNumberInputChange(value, 'num2')}
           />
           <Equals gridArea="equals">=</Equals>
-          <NumberOutput gridArea="response" type="text" value={response.split(': ')[1]} readOnly />
+          <NumberOutput gridArea="response" type="text" value={response.split(': ')[1] || '0'} readOnly />
         </Container>
+        {history.map(equation => (
+          <div key={Math.random()}>{equation}</div>
+        ))}
       </Fragment>
     );
   }
