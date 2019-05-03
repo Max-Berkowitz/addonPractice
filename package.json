@@ -28,7 +28,7 @@
     "express": "^4.16.3",
     "express-session": "^1.15.6",
     "node-addon-api": "^1.6.1",
-    "node-gyp": "^3.8.0",
+    "node-gyp": "^4.0.0",
     "react": "^16.5.1",
     "react-dom": "^16.5.1",
     "styled-components": "^4.1.3"
