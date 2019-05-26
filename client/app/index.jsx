@@ -65,18 +65,21 @@ const ping = async () => {
   await post('/ping');
 };
 
+const initialState = { num1: 0, num2: 0, operation: '+', getHistory: false, history: [] };
+
 const operations = ['+', '-', 'X', '/'];
 
 export default class extends Component {
   constructor(props) {
     super(props);
 
-    this.state = { num1: 0, num2: 0, operation: '+', response: '', getHistory: false, history: [] };
+    this.state = { ...initialState, response: '' };
 
     this.handleNumberInputChange = this.handleNumberInputChange.bind(this);
     this.handleAddOneClick = this.handleAddOneClick.bind(this);
     this.handleOperationChange = this.handleOperationChange.bind(this);
     this.handleFullHistoryClick = this.handleFullHistoryClick.bind(this);
+    this.handleClearHistoryClick = this.handleClearHistoryClick.bind(this);
   }
 
   async componentDidMount() {
@@ -146,6 +149,11 @@ export default class extends Component {
     this.setState({ history });
   }
 
+  async handleClearHistoryClick() {
+    await post('/api/clear_history');
+    this.setState({ ...initialState, response: 'History Cleared' });
+  }
+
   render() {
     const { num1, num2, operation, response, history } = this.state;
     return (
@@ -156,6 +164,9 @@ export default class extends Component {
         </button>
         <button type="submit" onClick={this.handleFullHistoryClick}>
           Full History
+        </button>
+        <button type="submit" onClick={this.handleClearHistoryClick}>
+          Clear History
         </button>
         <Container>
           <NumberInput

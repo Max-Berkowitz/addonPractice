@@ -21,7 +21,7 @@ def getHistory():
     if (password != portPassword):
         return 'improper authentication'
     quantity = int(request.args.get('quantity'))
-    return json.dumps(history[-(quantity + 1):-1])
+    return json.dumps(history[-quantity:])
 
 @app.route('/full_history/', methods=['GET'])
 def getFullHistory():

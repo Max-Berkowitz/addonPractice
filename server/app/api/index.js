@@ -41,4 +41,9 @@ api.get('/full_history', async (req, res) => {
   res.status(200).send({ history: data.reverse() });
 });
 
+api.post('/clear_history', async (req, res) => {
+  await pyPort.clearHistory();
+  res.sendStatus(201);
+});
+
 module.exports = api;

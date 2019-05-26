@@ -11,20 +11,23 @@ module.exports = {
   connected: false,
   connect() {
     password = genPassword();
-    return new Promise((resolve, reject) => {
-      pyPort = spawn('python.exe', [`${__dirname}/pyPort.py`, password]);
+    return (
+      this.connected ||
+      new Promise((resolve, reject) => {
+        pyPort = spawn('python.exe', [`${__dirname}/pyPort.py`, password]);
 
-      pyPort.stdout.on('data', data => {
-        if (this.connected) return;
-        this.connected = true;
-        resolve(String.fromCharCode.apply(null, data));
-      });
+        pyPort.stdout.on('data', data => {
+          if (this.connected) return;
+          this.connected = true;
+          resolve(String.fromCharCode.apply(null, data));
+        });
 
-      pyPort.stderr.on('data', data => {
-        if (this.connected) return;
-        reject(String.fromCharCode.apply(null, data));
-      });
-    });
+        pyPort.stderr.on('data', data => {
+          if (this.connected) return;
+          reject(String.fromCharCode.apply(null, data));
+        });
+      })
+    );
   },
   async disconnect() {
     if (!this.connected) return;
@@ -35,5 +38,9 @@ module.exports = {
     });
     this.connected = false;
     pyPort = null;
+  },
+  async clearHistory() {
+    await this.disconnect();
+    await this.connect();
   },
 };
